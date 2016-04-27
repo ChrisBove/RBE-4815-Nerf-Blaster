@@ -1,2 +1,26 @@
 # RBE-4815-Nerf-Blaster
 Autonomous control of ABB robot arm to fire nerf blaster at intruders
+
+## Workspace Setup
+```
+mkdir -p ~/nerf_workspace/src
+cd ~/nerf_workspace/src
+catkin_init_workspace
+cd ~/nerf_workspace/
+catkin_make
+source devel/setup.bash
+echo source ~/nerf_workspace/devel/setup.bash >> ~/.bashrc
+echo alias nerfhome="'cd ~/nerf_workspace/src/drc/'" >> ~/.bashrc
+echo alias nerfmake="'catkin_make install -DCMAKE_INSTALL_PREFIX:PATH=~/nerf_workspace/install -C ~/nerf_workspace -DCMAKE_BUILD_TYPE=Release'" >> ~/.bashrc
+echo alias nerfeclipse="'catkin_make --force-cmake -G\"Eclipse CDT4 - Unix Makefiles\" -DCMAKE_BUILD_TYPE=Debug -DCMAKE_ECLIPSE_MAKE_ARGUMENTS=-j8 -C ~/nerf_workspace'" >> ~/.bashrc
+. ~/.bashrc
+cd ~/nerf_workspace/src
+wstool init
+wstool set drc https://github.com/ChrisBove/RBE-4815-Nerf-Blaster --git
+. ~/.bashrc
+wstool update
+. ~/.bashrc
+cd ~/nerf_workspace/
+catkin_make
+. ~/.bashrc
+```
