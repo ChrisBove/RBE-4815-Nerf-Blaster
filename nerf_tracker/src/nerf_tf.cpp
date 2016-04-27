@@ -33,15 +33,16 @@ void NerfTF::lookupTransform(){
 	msg.data = ss.str();
 
 	try {
-		listener.lookupTransform("/openni_depth_frame", "/torso_3", ros::Time(0),
+		listener.lookupTransform("/openni_depth_frame", ss.str(), ros::Time(0),
 				transform);
 		std::cout << "Got transform" << std::endl;
 	} catch (tf::TransformException ex) {
 		ROS_ERROR("%s", ex.what());
+		ros::Duration(1.0).sleep();
 		// try another user string
 		if (activeUser < 10) activeUser++;
 		else activeUser = 1;
 		lookupTransform();
-		ros::Duration(1.0).sleep();
+
 	}
 }
