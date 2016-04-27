@@ -15,7 +15,7 @@
 
 NerfTF::NerfTF(){
 	//poseSub = nh.subscribe("/tf", 10, poseCallback);
-	activeUser = 1;
+	activeUser = 0; // start at 0 since the first check always fails
 }
 
 void NerfTF::poseCallback(tf2_msgs::TFMessage msg){
