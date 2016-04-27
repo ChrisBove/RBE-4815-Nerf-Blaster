@@ -3,6 +3,7 @@ Autonomous control of ABB robot arm to fire nerf blaster at intruders
 
 ## Scripted Workspace Setup
 ```
+sudo usermod -a -G dialout $USER
 cd ~/Downloads
 # download the bash file
 sudo chmod +x nerf_workspace_setup.bash
@@ -11,6 +12,7 @@ sudo chmod +x nerf_workspace_setup.bash
 
 ## Workspace Setup
 ```
+sudo usermod -a -G dialout $USER
 sudo rosdep init
 rosdep update
 source /opt/ros/indigo/setup.bash

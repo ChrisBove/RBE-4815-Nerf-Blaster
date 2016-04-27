@@ -6,6 +6,7 @@
 #include <sstream>
 
 #include "nerf_tracker/nerf_tf.hpp"
+#include "nerf_tracker/nerf_shooter.hpp"
 
 int main(int argc, char **argv) {
 	ros::init(argc, argv, "nerf_tracker");
@@ -16,15 +17,18 @@ int main(int argc, char **argv) {
 
 	ros::Rate loop_rate(10);
 
+	Shooter shooter;
 	NerfTF nerfTF;
 	ros::spinOnce();
+	shooter.spinUp();
 
 	// subscribe to the tf getting published of the user
 	// create a tf from kinect to the arm frames
 
 	// wait for valid target
 	// calculate the angle between the EOAT and the user torso
-	// send the movement command to the arm
+	// limit the angles to the joint angles
+	// send the joint angle in radians command to the arm
 
 	int count = 0;
 	while (ros::ok()) {

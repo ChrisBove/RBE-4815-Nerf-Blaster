@@ -15,11 +15,11 @@ find_package(catkin REQUIRED COMPONENTS
   rospy
   std_msgs
   tf 
-  geometry_msgs 
+  geometry_msgs
 )
 
 ## System dependencies are found with CMake's conventions
-# find_package(Boost REQUIRED COMPONENTS system)
+ find_package(Boost REQUIRED COMPONENTS system)
 
 
 ## Uncomment this if the package has a setup.py. This macro ensures
@@ -139,6 +139,7 @@ include_directories(
 ## Declare a C++ executable
  add_executable(nerf_tracker src/nerf_tracker.cpp
   src/nerf_tf.cpp
+  src/nerf_shooter.cpp
   #src/rosbert_map.cpp
   #src/rosbert_nav.cpp
  )
