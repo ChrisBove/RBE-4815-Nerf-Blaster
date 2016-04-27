@@ -16,11 +16,23 @@
 NerfTF::NerfTF(){
 	//poseSub = nh.subscribe("/tf", 10, poseCallback);
 	activeUser = 0; // start at 0 since the first check always fails
+
+	timer = nh.createTimer(ros::Duration(0.1), &NerfTF::broadcastTransform, this);
 }
 
 void NerfTF::poseCallback(tf2_msgs::TFMessage msg){
 	std::cout << "Callback" << std::endl;
 
+}
+
+void NerfTF::broadcastTransform(const ros::TimerEvent&){
+	std::cout << "Broadcasting " << std::endl;
+	tf::Transform transform;
+	transform.setOrigin(tf::Vector3(0.0, 2.0, 0.0));
+	transform.setRotation(tf::Quaternion(0, 0, 0, 1));
+	broadcaster.sendTransform(
+			tf::StampedTransform(transform, ros::Time(0), "/openni_depth_frame",
+					"carrot1"));
 }
 
 void NerfTF::lookupTransform(){
@@ -45,6 +57,7 @@ void NerfTF::lookupTransform(){
 				<< " pitch: " << pitch << std::endl;
 	} catch (tf::TransformException ex) {
 		ROS_ERROR("%s", ex.what());
+		ros::spinOnce();
 		ros::Duration(1.0).sleep();
 		// try another user string
 		if (activeUser < 10) activeUser++;
