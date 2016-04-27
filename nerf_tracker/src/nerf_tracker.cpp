@@ -5,6 +5,8 @@
 
 #include <sstream>
 
+#include "nerf_tracker/nerf_tf.hpp"
+
 int main(int argc, char **argv) {
 	ros::init(argc, argv, "nerf_tracker");
 
@@ -13,6 +15,16 @@ int main(int argc, char **argv) {
 	ros::Publisher chatter_pub = n.advertise<std_msgs::String>("chatter", 1000);
 
 	ros::Rate loop_rate(10);
+
+	NerfTF nerfTF;
+	ros::spinOnce();
+
+	// subscribe to the tf getting published of the user
+	// create a tf from kinect to the arm frames
+
+	// wait for valid target
+	// calculate the angle between the EOAT and the user torso
+	// send the movement command to the arm
 
 	int count = 0;
 	while (ros::ok()) {
@@ -23,9 +35,10 @@ int main(int argc, char **argv) {
 		ss << "hello world " << count;
 		msg.data = ss.str();
 
-		ROS_INFO("%s", msg.data.c_str());
+		//ROS_INFO("%s", msg.data.c_str());
 
-		chatter_pub.publish(msg);
+		nerfTF.lookupTransform();
+		//chatter_pub.publish(msg);
 
 		ros::spinOnce();
 

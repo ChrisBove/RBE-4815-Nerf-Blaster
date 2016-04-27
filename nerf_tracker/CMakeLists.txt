@@ -138,7 +138,7 @@ include_directories(
 
 ## Declare a C++ executable
  add_executable(nerf_tracker src/nerf_tracker.cpp
-  #src/a_star.cpp
+  src/nerf_tf.cpp
   #src/rosbert_map.cpp
   #src/rosbert_nav.cpp
  )
