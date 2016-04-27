@@ -24,18 +24,25 @@ void NerfTF::poseCallback(tf2_msgs::TFMessage msg){
 }
 
 void NerfTF::lookupTransform(){
-	tf::StampedTransform transform;
+	tf::StampedTransform transform; // for storing transform
+	double yaw, pitch;
 
-	std_msgs::String msg;
-
+	// create string of tf topic based on activeUser
 	std::stringstream ss;
 	ss << "/torso_" << activeUser;
-	msg.data = ss.str();
 
 	try {
 		listener.lookupTransform("/openni_depth_frame", ss.str(), ros::Time(0),
 				transform);
-		std::cout << "Got transform" << std::endl;
+
+		// right of kinect is negative yaw
+		yaw = atan2(transform.getOrigin().y(),
+					transform.getOrigin().x());
+		// above kinect is negative pitch
+		pitch = -atan2(transform.getOrigin().z(),
+					transform.getOrigin().x());
+		std::cout << "Got transform, yaw: " << yaw
+				<< " pitch: " << pitch << std::endl;
 	} catch (tf::TransformException ex) {
 		ROS_ERROR("%s", ex.what());
 		ros::Duration(1.0).sleep();
