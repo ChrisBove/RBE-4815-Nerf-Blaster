@@ -4,7 +4,7 @@ Autonomous control of ABB robot arm to fire nerf blaster at intruders
 ## Scripted Workspace Setup
 ```
 cd ~/Downloads
-wget -N https://raw.githubusercontent.com/ChrisBove/RBE-4815-Nerf-Blaster/master/nerf_workspace_setup.bash
+# download the bash file
 sudo chmod +x nerf_workspace_setup.bash
 ./nerf_workspace_setup.bash
 ```
