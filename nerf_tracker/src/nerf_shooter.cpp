@@ -11,31 +11,45 @@
 #include <iostream>
 #include <fstream>
 #include <string>
+#include "serial/serial.h"
+
+
 
 //#include <boost/asio.hpp>
 //using namespace::boost::asio;
 
 Shooter::Shooter(){
-	arduino.open("dev/ttyUSB0");
+	//serial::Serial thingy("dev/ttyUSB0", 9600, serial::Timeout::simpleTimeout(1000));
+	//usbPort << "dev/ttyUSB0";
+	// http://stackoverflow.com/questions/6947413/how-to-open-read-and-write-from-serial-port-in-c
+	std::string str("dev/ttyUSB0");
+	std::cout << "starting com setup" << std::endl;
+	port.setBaudrate(9600);
+	port.setPort(str);
+	port.open();
+	//arduino.open("dev/ttyUSB0");
 	std::cout << "Sleeping to wait for Arduino reset" << std::endl;
-	ros::Duration(5.0).sleep();
+	ros::Duration(3.0).sleep();
 	std::cout << "Done Sleeping" << std::endl;
 }
 
 Shooter::~Shooter(){
-	arduino.close();
+	//arduino.close();
+	port.close();
 }
 
 void Shooter::spinUp(){
-	arduino << SPIN_UP;
+	//arduino << "w";
+	//arduino << SPIN_UP;
+	port.write("w");
 }
 
 void Shooter::spinDown(){
-	arduino << SPIN_DOWN;
+	//arduino << SPIN_DOWN;
 }
 
 void Shooter::fire(){
-	arduino << SHOOT_ONCE;
+	//arduino << SHOOT_ONCE;
 }
 
 //void Shooter::SendDataViaSerialPort(const std::string& to_write)

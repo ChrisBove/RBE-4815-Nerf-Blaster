@@ -17,10 +17,10 @@ int main(int argc, char **argv) {
 
 	ros::Rate loop_rate(10);
 
-	Shooter shooter;
+	//Shooter shooter;
 	NerfTF nerfTF;
 	ros::spinOnce();
-	shooter.spinUp();
+	//shooter.spinUp();
 
 	// subscribe to the tf getting published of the user
 	// create a tf from kinect to the arm frames

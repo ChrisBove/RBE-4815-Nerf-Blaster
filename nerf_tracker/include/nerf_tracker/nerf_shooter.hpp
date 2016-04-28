@@ -12,6 +12,7 @@
 #include <iostream>
 #include <fstream>
 #include <string>
+#include "serial/serial.h"
 //#include <boost/asio.hpp>
 //using namespace::boost::asio;
 
@@ -28,7 +29,8 @@ public:
 
 private:
 
-	std::ofstream arduino;
+	//std::ofstream arduino;
+	serial::Serial port;
 
 	const char SPIN_UP = 'w';
 	const char SPIN_DOWN = 's';
@@ -38,7 +40,7 @@ private:
 
 	const int baudrate = 9600;
 
-	//static const std::string usbPort;
+	static const std::string usbPort;
 //	boost::shared_ptr<serial_port_base::baud_rate>
 //	serial_port_base::baud_rate BAUD(baudrate);
 //	serial_port_base::parity PARITY(serial_port_base::parity::none);

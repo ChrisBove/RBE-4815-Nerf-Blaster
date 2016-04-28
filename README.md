@@ -30,6 +30,10 @@ echo alias nerfmake="'catkin_make install -DCMAKE_INSTALL_PREFIX:PATH=~/nerf_wor
 echo alias nerfeclipse="'catkin_make --force-cmake -G\"Eclipse CDT4 - Unix Makefiles\" -DCMAKE_BUILD_TYPE=Debug -DCMAKE_ECLIPSE_MAKE_ARGUMENTS=-j8 -C ~/nerf_workspace'" >> ~/.bashrc
 . ~/.bashrc
 cd ~/nerf_workspace/src
+git clone https://github.com/wjwwood/serial.git
+cd ~/nerf_workspace/
+catkin_make
+cd ~/nerf_workspace/src
 wstool init
 wstool set nerf https://github.com/ChrisBove/RBE-4815-Nerf-Blaster --git
 . ~/.bashrc
