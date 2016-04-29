@@ -78,16 +78,18 @@ bool NerfTF::lookupTransform(){
 			listener.lookupTransform("/nerf", ss.str(),
 					ros::Time(0), transform);
 
+			userX = transform.getOrigin().x();
+			userY = transform.getOrigin().y();
 			// right of kinect is negative yaw
 			yaw = atan2(transform.getOrigin().y(), transform.getOrigin().x()) * 180.0/3.14159;
 			// above kinect is negative pitch
-			pitch = -atan2(transform.getOrigin().z()+0.3,
+			pitch = -atan2(transform.getOrigin().z()+0.8,
 					transform.getOrigin().x()) * 180.0/3.14159;
 			std::cout << "Got transform, yaw: " << yaw << " pitch: " << pitch
 					<< std::endl;
 
 			// since we got a transform, let's pipe that over
-			sendJointAngles();
+			//sendJointAngles();
 			return true;
 
 
@@ -113,4 +115,12 @@ void NerfTF::sendJointAngles(){
 	point.x = (yaw) - 90;
 	point.y = pitch + 180;
 	armPub.publish(point);
+}
+
+double NerfTF::getUserX(){
+	return userX;
+}
+
+double NerfTF::getUserY(){
+	return userY;
 }

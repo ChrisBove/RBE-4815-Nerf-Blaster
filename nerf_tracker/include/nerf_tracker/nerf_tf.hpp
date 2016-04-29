@@ -22,6 +22,9 @@ public:
 	void broadcastTransform(const ros::TimerEvent&);
 	void sendJointAngles();
 
+	double getUserX();
+	double getUserY();
+
 private:
 	void poseCallback(tf2_msgs::TFMessage msg);
 
@@ -37,6 +40,7 @@ private:
 	double yaw, pitch;
 
 	unsigned int activeUser;
+	double userX, userY;
 };
 
 #endif

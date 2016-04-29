@@ -9,7 +9,7 @@
 #include "nerf_tracker/nerf_tf.hpp"
 #include "nerf_tracker/nerf_shooter.hpp"
 
-bool shoot;
+volatile bool shoot;
 
 void shootCallback(std_msgs::Bool status){
 	shoot = true;
@@ -20,10 +20,9 @@ int main(int argc, char **argv) {
 
 	ros::NodeHandle n;
 
-	ros::Publisher chatter_pub = n.advertise<std_msgs::String>("chatter", 1000);
 	ros::Subscriber statSub = n.subscribe("/shoot", 1, shootCallback);
 
-	ros::Rate loop_rate(10);
+	ros::Rate loop_rate(100);
 
 	Shooter shooter;
 	NerfTF nerfTF;
@@ -41,30 +40,47 @@ int main(int argc, char **argv) {
 	// limit the angles to the joint angles
 	// send the joint angle in radians command to the arm
 
-	int count = 0;
+	double userX = 0;
+	double userY = 0;
+	double lastX = userX;
+	double lastY = userY;
+
 	while (ros::ok()) {
 
-		std_msgs::String msg;
-
-		std::stringstream ss;
-		ss << "hello world " << count;
-		msg.data = ss.str();
-
-		//ROS_INFO("%s", msg.data.c_str());
-
 		if(nerfTF.lookupTransform()){
+			nerfTF.sendJointAngles();
 			shooter.spinUp();
 			if (!isSpinning){
 				ros::Duration(1.5).sleep();
 				isSpinning = true;
 			}
 
+			lastX = nerfTF.getUserX();
+			lastY = nerfTF.getUserY();
+
+			//std::cout << "lastX: " << lastX << " lastY: " << lastY << std::endl;
+
+			shoot = false;
+			// wait for arm to get in place
 			while(!shoot && ros::ok()){
 				ros::spinOnce();
 				loop_rate.sleep();
 			}
-			shooter.fire();
+
+			nerfTF.lookupTransform();
+
+			std::cout << "diffX: " << lastX - nerfTF.getUserX() << " diffY: " << lastY - nerfTF.getUserY() << std::endl;
+
+			// if haven't moved too much
+			if((fabs(lastX - nerfTF.getUserX()) < 0.01) && (fabs(lastY - nerfTF.getUserY()) < 0.01) ){
+				shooter.fire();
+			}
+			else{
+				std::cout << "SKIPPING A FIRE!!" << std::endl;
+				// do nothing, need to run again
+			}
 			shoot = false;
+
 		}
 		else{
 			shooter.spinDown();
@@ -77,7 +93,6 @@ int main(int argc, char **argv) {
 		ros::spinOnce();
 
 		loop_rate.sleep();
-		++count;
 	}
 
 	return 0;
