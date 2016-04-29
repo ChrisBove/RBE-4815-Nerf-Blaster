@@ -42,7 +42,7 @@ void NerfTF::broadcastTransform(const ros::TimerEvent&){
 	ros::Time time = ros::Time::now();
 
 	tf::Transform tfToBase;
-	tfToBase.setOrigin(tf::Vector3(-1.5, 0.0, 0.0));
+	tfToBase.setOrigin(tf::Vector3(-1.335, -1.03, 0.0));
 	tfToBase.setRotation(tf::Quaternion(0, 0, 1, 1));
 	broadcaster.sendTransform(
 			tf::StampedTransform(tfToBase, time, "/openni_depth_frame",
@@ -56,7 +56,7 @@ void NerfTF::broadcastTransform(const ros::TimerEvent&){
 					"/abb_wrist"));
 	ros::spinOnce();
 	tf::Transform tfToGun;
-	tfToGun.setOrigin(tf::Vector3(0.085, 0.0, 0.0));
+	tfToGun.setOrigin(tf::Vector3(0.15, 0.0, 0.0));
 	tfToGun.setRotation(tf::Quaternion(0, 0, -1, 1));
 	broadcaster.sendTransform(
 			tf::StampedTransform(tfToGun, time, "/abb_wrist",
