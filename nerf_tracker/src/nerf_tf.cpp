@@ -37,7 +37,7 @@ void NerfTF::poseCallback(tf2_msgs::TFMessage msg){
 }
 
 void NerfTF::broadcastTransform(const ros::TimerEvent&){
-	std::cout << "Broadcasting again" << std::endl;
+	//std::cout << "Broadcasting again" << std::endl;
 
 	ros::Time time = ros::Time::now();
 
@@ -91,9 +91,9 @@ bool NerfTF::lookupTransform(){
 
 
 		} catch (tf::TransformException ex) {
-			ROS_ERROR("%s", ex.what());
+			//ROS_ERROR("%s", ex.what());
 			ros::spinOnce();
-			ros::Duration(1.0).sleep();
+			ros::Duration(0.25).sleep();
 			// try another user string
 			if (activeUser < 10)
 				activeUser++;

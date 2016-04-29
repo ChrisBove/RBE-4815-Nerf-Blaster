@@ -58,7 +58,7 @@ void Shooter::spinDown(){
 	//arduino << SPIN_DOWN;
 	nerfPub.publish(SPIN_DOWN);
 	ros::spinOnce();
-	std::cout << "Spin down" << std::endl;
+	//std::cout << "Spin down" << std::endl;
 }
 
 void Shooter::fire(){
