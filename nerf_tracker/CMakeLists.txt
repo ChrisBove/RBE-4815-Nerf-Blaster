@@ -168,6 +168,15 @@ include_directories(
 #   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 # )
 
+ install(PROGRAMS
+   scripts/arm_fwd.py
+   scripts/blaster_fwd.py
+   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+ )
+
+catkin_install_python(PROGRAMS scripts/arm_fwd.py scripts/blaster_fwd.py
+  DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION})
+
 ## Mark executables and/or libraries for installation
  install(TARGETS nerf_tracker #rosbert_lab4_node
    ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
@@ -201,3 +210,7 @@ include_directories(
 
 ## Add folders to be run by python nosetests
 # catkin_add_nosetests(test)
+
+catkin_package(
+  CATKIN_DEPENDS
+)

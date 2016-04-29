@@ -42,14 +42,15 @@ void NerfTF::broadcastTransform(const ros::TimerEvent&){
 	ros::Time time = ros::Time::now();
 
 	tf::Transform tfToBase;
-	tfToBase.setOrigin(tf::Vector3(-1.335, -1.03, 0.0));
+	tfToBase.setOrigin(tf::Vector3(-1.335, -1.03, 0.057));
 	tfToBase.setRotation(tf::Quaternion(0, 0, 1, 1));
 	broadcaster.sendTransform(
 			tf::StampedTransform(tfToBase, time, "/openni_depth_frame",
 					"/abb_base"));
 	ros::spinOnce();
 	tf::Transform tfToWrist;
-	tfToWrist.setOrigin(tf::Vector3(0.75, 0.0, 1.187));
+	tfToWrist.setOrigin(tf::Vector3(-0.15, 0.0, 1.39));
+	//tfToWrist.setOrigin(tf::Vector3(0.75, 0.0, 1.187)); // for 0 pose
 	tfToWrist.setRotation(tf::Quaternion(0, 0, 0, 1));
 	broadcaster.sendTransform(
 			tf::StampedTransform(tfToWrist, time, "/abb_base",
@@ -78,10 +79,10 @@ bool NerfTF::lookupTransform(){
 					ros::Time(0), transform);
 
 			// right of kinect is negative yaw
-			yaw = atan2(transform.getOrigin().y(), transform.getOrigin().x());
+			yaw = atan2(transform.getOrigin().y(), transform.getOrigin().x()) * 180.0/3.14159;
 			// above kinect is negative pitch
-			pitch = -atan2(transform.getOrigin().z(),
-					transform.getOrigin().x());
+			pitch = -atan2(transform.getOrigin().z()+0.3,
+					transform.getOrigin().x()) * 180.0/3.14159;
 			std::cout << "Got transform, yaw: " << yaw << " pitch: " << pitch
 					<< std::endl;
 
@@ -109,7 +110,7 @@ bool NerfTF::lookupTransform(){
 
 void NerfTF::sendJointAngles(){
 	geometry_msgs::Point point;
-	point.x = yaw;
-	point.y = pitch;
+	point.x = (yaw) - 90;
+	point.y = pitch + 180;
 	armPub.publish(point);
 }

@@ -21,7 +21,7 @@ int main(int argc, char **argv) {
 	ros::NodeHandle n;
 
 	ros::Publisher chatter_pub = n.advertise<std_msgs::String>("chatter", 1000);
-	ros::Subscriber statSub = n.subscribe("/shoot", 10, shootCallback);
+	ros::Subscriber statSub = n.subscribe("/shoot", 1, shootCallback);
 
 	ros::Rate loop_rate(10);
 
@@ -30,6 +30,8 @@ int main(int argc, char **argv) {
 	ros::Duration(1.0).sleep();
 	ros::spinOnce();
 	shooter.spinDown();
+
+	bool isSpinning = false;
 
 	// subscribe to the tf getting published of the user
 	// create a tf from kinect to the arm frames
@@ -52,6 +54,11 @@ int main(int argc, char **argv) {
 
 		if(nerfTF.lookupTransform()){
 			shooter.spinUp();
+			if (!isSpinning){
+				ros::Duration(1.5).sleep();
+				isSpinning = true;
+			}
+
 			while(!shoot && ros::ok()){
 				ros::spinOnce();
 				loop_rate.sleep();
@@ -62,6 +69,7 @@ int main(int argc, char **argv) {
 		else{
 			shooter.spinDown();
 			shoot = false;
+			isSpinning = false;
 		}
 
 		//chatter_pub.publish(msg);
