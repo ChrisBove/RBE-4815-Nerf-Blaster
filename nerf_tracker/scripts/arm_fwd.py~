@@ -1,0 +1,31 @@
+import rospy
+import serial
+from geometry_msgs.msg import Point
+from std_msgs.msg import Bool
+
+def callback(msg):
+    x = msg.x
+    y = msg.y
+
+    strX = ("%08.2f"%x)
+    strY = ("%08.2f"%y)
+    
+    ser.write(strX + strY)
+    print strX + strY
+    
+    #raw_input("enter anything to simulate arm completing motion...")
+    print "Waiting for arm to move..."
+    ser.read(1);
+    print "Arm moved."
+    pub.publish(Bool(True));
+    
+
+if __name__ == '__main__':
+    global ser
+    rospy.init_node('arm_fwd')
+    ser= serial.Serial('/dev/ttyUSB1', 38400)
+    
+    sub = rospy.Subscriber("/arm", Point, callback)
+    pub = rospy.Publisher("/shoot", Bool, queue_size = 1)
+    
+    rospy.spin();
