@@ -20,6 +20,7 @@ public:
 
 	void lookupTransform();
 	void broadcastTransform(const ros::TimerEvent&);
+	void sendJointAngles();
 
 private:
 	void poseCallback(tf2_msgs::TFMessage msg);
@@ -28,10 +29,12 @@ private:
 	ros::Timer timer;
 	//ros::Subscriber poseSub;
 
-	//ros::Publisher armTF;
+	ros::Publisher armPub;
 
 	tf::TransformListener listener;
 	tf::TransformBroadcaster broadcaster;
+
+	double yaw, pitch;
 
 	unsigned int activeUser;
 };

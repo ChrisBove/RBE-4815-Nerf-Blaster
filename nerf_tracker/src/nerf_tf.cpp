@@ -6,6 +6,7 @@
  */
 
 
+#include <ros/ros.h>
 #include <nerf_tracker/nerf_tf.hpp>
 #include <ros/duration.h>
 #include <ros/init.h>
@@ -17,11 +18,13 @@
 #include <tf/LinearMath/Transform.h>
 #include <tf/LinearMath/Vector3.h>
 #include <tf/transform_datatypes.h>
+#include <geometry_msgs/Point.h>
 
 #include "math.h"
 
 NerfTF::NerfTF(){
 	//poseSub = nh.subscribe("/tf", 10, poseCallback);
+	armPub = nh.advertise<geometry_msgs::Point>("/arm", 10);
 	activeUser = 0; // start at 0 since the first check always fails
 	timer = nh.createTimer(ros::Duration(0.1), &NerfTF::broadcastTransform, this);
 }
@@ -62,7 +65,6 @@ void NerfTF::broadcastTransform(const ros::TimerEvent&){
 
 void NerfTF::lookupTransform(){
 	tf::StampedTransform transform; // for storing transform
-	double yaw, pitch;
 
 	// create string of tf topic based on activeUser
 	std::stringstream ss;
@@ -80,6 +82,11 @@ void NerfTF::lookupTransform(){
 					transform.getOrigin().x());
 			std::cout << "Got transform, yaw: " << yaw << " pitch: " << pitch
 					<< std::endl;
+
+			// since we got a transform, let's pipe that over
+			sendJointAngles();
+
+
 		} catch (tf::TransformException ex) {
 			ROS_ERROR("%s", ex.what());
 			ros::spinOnce();
@@ -94,4 +101,11 @@ void NerfTF::lookupTransform(){
 		}
 	} else
 		return;
+}
+
+void NerfTF::sendJointAngles(){
+	geometry_msgs::Point point;
+	point.x = yaw;
+	point.y = pitch;
+	armPub.publish(point);
 }
