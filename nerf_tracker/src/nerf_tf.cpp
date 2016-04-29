@@ -5,18 +5,24 @@
  *      Author: christopher
  */
 
-#include <ros/ros.h>
-#include "nerf_tracker/nerf_tf.hpp"
-#include "std_msgs/String.h"
-#include "tf2_msgs/TFMessage.h"
-#include "geometry_msgs/Transform.h"
+
+#include <nerf_tracker/nerf_tf.hpp>
+#include <ros/duration.h>
+#include <ros/init.h>
+#include <ros/node_handle.h>
+#include <ros/time.h>
+#include <rosconsole/macros_generated.h>
+#include <tf/exceptions.h>
+#include <tf/LinearMath/Quaternion.h>
+#include <tf/LinearMath/Transform.h>
+#include <tf/LinearMath/Vector3.h>
+#include <tf/transform_datatypes.h>
+
 #include "math.h"
-#include <tf/transform_listener.h>
 
 NerfTF::NerfTF(){
 	//poseSub = nh.subscribe("/tf", 10, poseCallback);
 	activeUser = 0; // start at 0 since the first check always fails
-
 	timer = nh.createTimer(ros::Duration(0.1), &NerfTF::broadcastTransform, this);
 }
 
@@ -26,13 +32,32 @@ void NerfTF::poseCallback(tf2_msgs::TFMessage msg){
 }
 
 void NerfTF::broadcastTransform(const ros::TimerEvent&){
-	std::cout << "Broadcasting " << std::endl;
-	tf::Transform transform;
-	transform.setOrigin(tf::Vector3(0.0, 2.0, 0.0));
-	transform.setRotation(tf::Quaternion(0, 0, 0, 1));
+	std::cout << "Broadcasting again" << std::endl;
+
+	ros::Time time = ros::Time::now();
+
+	tf::Transform tfToBase;
+	tfToBase.setOrigin(tf::Vector3(-1.5, 0.0, 0.0));
+	tfToBase.setRotation(tf::Quaternion(0, 0, 1, 1));
 	broadcaster.sendTransform(
-			tf::StampedTransform(transform, ros::Time(0), "/openni_depth_frame",
-					"carrot1"));
+			tf::StampedTransform(tfToBase, time, "/openni_depth_frame",
+					"/abb_base"));
+	ros::spinOnce();
+	tf::Transform tfToWrist;
+	tfToWrist.setOrigin(tf::Vector3(0.75, 0.0, 1.187));
+	tfToWrist.setRotation(tf::Quaternion(0, 0, 0, 1));
+	broadcaster.sendTransform(
+			tf::StampedTransform(tfToWrist, time, "/abb_base",
+					"/abb_wrist"));
+	ros::spinOnce();
+	tf::Transform tfToGun;
+	tfToGun.setOrigin(tf::Vector3(0.085, 0.0, 0.0));
+	tfToGun.setRotation(tf::Quaternion(0, 0, -1, 1));
+	broadcaster.sendTransform(
+			tf::StampedTransform(tfToGun, time, "/abb_wrist",
+					"/nerf"));
+	ros::spinOnce();
+
 }
 
 void NerfTF::lookupTransform(){
@@ -45,7 +70,7 @@ void NerfTF::lookupTransform(){
 
 	if (ros::ok()) {
 		try {
-			listener.lookupTransform("/openni_depth_frame", ss.str(),
+			listener.lookupTransform("/nerf", ss.str(),
 					ros::Time(0), transform);
 
 			// right of kinect is negative yaw

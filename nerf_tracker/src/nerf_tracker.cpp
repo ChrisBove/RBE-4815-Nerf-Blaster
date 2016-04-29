@@ -6,7 +6,7 @@
 #include <sstream>
 
 #include "nerf_tracker/nerf_tf.hpp"
-#include "nerf_tracker/nerf_shooter.hpp"
+//#include "nerf_tracker/nerf_shooter.hpp"
 
 int main(int argc, char **argv) {
 	ros::init(argc, argv, "nerf_tracker");
@@ -19,6 +19,7 @@ int main(int argc, char **argv) {
 
 	//Shooter shooter;
 	NerfTF nerfTF;
+	ros::Duration(1.0).sleep();
 	ros::spinOnce();
 	//shooter.spinUp();
 
