@@ -1,12 +1,19 @@
 #include "ros/ros.h"
 #include "std_msgs/String.h"
+#include "std_msgs/Bool.h"
 #include "stdlib.h"
 #include "tf/tf.h"
 
 #include <sstream>
 
 #include "nerf_tracker/nerf_tf.hpp"
-//#include "nerf_tracker/nerf_shooter.hpp"
+#include "nerf_tracker/nerf_shooter.hpp"
+
+bool shoot;
+
+void shootCallback(std_msgs::Bool status){
+	shoot = true;
+}
 
 int main(int argc, char **argv) {
 	ros::init(argc, argv, "nerf_tracker");
@@ -14,14 +21,15 @@ int main(int argc, char **argv) {
 	ros::NodeHandle n;
 
 	ros::Publisher chatter_pub = n.advertise<std_msgs::String>("chatter", 1000);
+	ros::Subscriber statSub = n.subscribe("/shoot", 10, shootCallback);
 
 	ros::Rate loop_rate(10);
 
-	//Shooter shooter;
+	Shooter shooter;
 	NerfTF nerfTF;
 	ros::Duration(1.0).sleep();
 	ros::spinOnce();
-	//shooter.spinUp();
+	shooter.spinDown();
 
 	// subscribe to the tf getting published of the user
 	// create a tf from kinect to the arm frames
@@ -42,7 +50,20 @@ int main(int argc, char **argv) {
 
 		//ROS_INFO("%s", msg.data.c_str());
 
-		nerfTF.lookupTransform();
+		if(nerfTF.lookupTransform()){
+			shooter.spinUp();
+			while(!shoot && ros::ok()){
+				ros::spinOnce();
+				loop_rate.sleep();
+			}
+			shooter.fire();
+			shoot = false;
+		}
+		else{
+			shooter.spinDown();
+			shoot = false;
+		}
+
 		//chatter_pub.publish(msg);
 
 		ros::spinOnce();

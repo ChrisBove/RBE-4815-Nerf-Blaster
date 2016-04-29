@@ -18,7 +18,7 @@ class NerfTF {
 public:
 	NerfTF();
 
-	void lookupTransform();
+	bool lookupTransform();
 	void broadcastTransform(const ros::TimerEvent&);
 	void sendJointAngles();
 

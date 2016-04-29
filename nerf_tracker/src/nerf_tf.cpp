@@ -19,8 +19,10 @@
 #include <tf/LinearMath/Vector3.h>
 #include <tf/transform_datatypes.h>
 #include <geometry_msgs/Point.h>
+#include <std_msgs/Char.h>
 
 #include "math.h"
+//#include <nerf_tracker/nerf_shooter.hpp>
 
 NerfTF::NerfTF(){
 	//poseSub = nh.subscribe("/tf", 10, poseCallback);
@@ -63,7 +65,7 @@ void NerfTF::broadcastTransform(const ros::TimerEvent&){
 
 }
 
-void NerfTF::lookupTransform(){
+bool NerfTF::lookupTransform(){
 	tf::StampedTransform transform; // for storing transform
 
 	// create string of tf topic based on activeUser
@@ -85,6 +87,7 @@ void NerfTF::lookupTransform(){
 
 			// since we got a transform, let's pipe that over
 			sendJointAngles();
+			return true;
 
 
 		} catch (tf::TransformException ex) {
@@ -96,11 +99,12 @@ void NerfTF::lookupTransform(){
 				activeUser++;
 			else
 				activeUser = 1;
-			lookupTransform();
+
+			return false;
 
 		}
 	} else
-		return;
+		return false;
 }
 
 void NerfTF::sendJointAngles(){

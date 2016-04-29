@@ -5,14 +5,17 @@
  *      Author: christopher
  */
 
-#ifndef NERF_SHOOTER_HPP_
-#define NERF_SHOOTER_HPP_
+#ifndef NERF_SHOOTER_HPP
+#define NERF_SHOOTER_HPP
 
 
-#include <iostream>
+#include <ros/ros.h>
+#include <std_msgs/Char.h>
 #include <fstream>
+#include <iostream>
 #include <string>
-#include "serial/serial.h"
+
+//#include "serial/serial.h"
 //#include <boost/asio.hpp>
 //using namespace::boost::asio;
 
@@ -29,14 +32,16 @@ public:
 
 private:
 
+	ros::NodeHandle nh;
+	ros::Publisher nerfPub;
 	//std::ofstream arduino;
-	serial::Serial port;
+	//serial::Serial port;
 
-	const char SPIN_UP = 'w';
-	const char SPIN_DOWN = 's';
-	const char SHOOT_ONCE = 'q';
-	const char AUTOFIRE_START = 'a';
-	const char AUTOFIRE_STOP = 'z';
+	std_msgs::Char SPIN_UP;
+	std_msgs::Char SPIN_DOWN;
+	std_msgs::Char SHOOT_ONCE;
+	std_msgs::Char AUTOFIRE_START;
+	std_msgs::Char AUTOFIRE_STOP;
 
 	const int baudrate = 9600;
 
